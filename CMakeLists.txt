@@ -3,7 +3,7 @@
 # Copyright (c) 2012-2015 Sebastien Rombauts (sebastien.rombauts@gmail.com)
 #
 # Distributed under the MIT License (MIT) (See accompanying file LICENSE.txt
-# or copy at http://opensource.org/licenses/MIT) 
+# or copy at http://opensource.org/licenses/MIT)
 if (NOT BIICODE)
 
 cmake_minimum_required(VERSION 2.6)
@@ -30,8 +30,8 @@ if (MSVC)
 else (MSVC)
     set(CPPLINT_ARG_OUTPUT      "--output=eclipse")
     set(CPPCHECK_ARG_TEMPLATE   "--template=gcc")
-    # Useful compile flags and extra warnings 
-   #add_compile_options() is not supported with CMake 2.8.7 of Ubuntu 12.04 on Travis-CI    
+    # Useful compile flags and extra warnings
+   #add_compile_options() is not supported with CMake 2.8.7 of Ubuntu 12.04 on Travis-CI
     add_definitions(-fstack-protector -Wall -Winit-self -Wswitch-enum -Wshadow -Winline)
     if (CMAKE_COMPILER_IS_GNUCXX)
         # GCC flags
@@ -44,6 +44,13 @@ else (MSVC)
             add_definitions (-fprofile-arcs -ftest-coverage)
             set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -fprofile-arcs -ftest-coverage")
         endif ()
+        if (NOT APPLE)
+            add_definitions(-rdynamic)
+        endif(NOT APPLE)
+        add_definitions(-fstack-protector-all -Wall -Wextra -pedantic -Wformat-security -Winit-self -Wswitch-default -Wswitch-enum -Wfloat-equal -Wshadow -Wcast-qual -Wconversion -Wlogical-op -Winline)
+    elseif ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
+        # Clang flags
+        add_definitions(-fstack-protector-all -Wall -Wextra -pedantic -Wformat-security -Winit-self -Wswitch-default -Wswitch-enum -Wfloat-equal -Wshadow -Wcast-qual -Wconversion -Winline)
     endif (CMAKE_COMPILER_IS_GNUCXX)
 endif (MSVC)
 # and then common variables
@@ -54,14 +61,14 @@ set(CPPLINT_ARG_LINELENGTH "--linelength=120")
 # Options relative to SQLite and SQLiteC++ functions
 
 option(SQLITE_ENABLE_COLUMN_METADATA "Enable Column::getName(). Require support from sqlite3 library." ON)
-if (SQLITE_ENABLE_COLUMN_METADATA) 
+if (SQLITE_ENABLE_COLUMN_METADATA)
     # Enable the use of SQLite column metadata and Column::getName() method,
     # Require that the sqlite3 library is also compiled with this flag (default under Debian/Ubuntu, but not on Mac OS X).
     add_definitions(-DSQLITE_ENABLE_COLUMN_METADATA)
 endif (SQLITE_ENABLE_COLUMN_METADATA)
 
 option(SQLITE_ENABLE_ASSERT_HANDLER "Enable the user defintion of a assertion_failed() handler." OFF)
-if (SQLITE_ENABLE_ASSERT_HANDLER) 
+if (SQLITE_ENABLE_ASSERT_HANDLER)
     # Enable the user defintion of a assertion_failed() handler (default to false, easier to handler for begginers).
     add_definitions(-DSQLITECPP_ENABLE_ASSERT_HANDLER)
 endif (SQLITE_ENABLE_ASSERT_HANDLER)
@@ -132,7 +139,7 @@ set(SQLITECPP_SCRIPT
 )
 source_group(scripts FILES ${SQLITECPP_SCRIPT})
 
-# All includes are relative to the "include" directory 
+# All includes are relative to the "include" directory
 include_directories("${PROJECT_SOURCE_DIR}/include")
 
 # add sources of the wrapper as a "SQLiteCpp" static library
@@ -212,7 +219,7 @@ if (SQLITECPP_BUILD_EXAMPLES)
         if (NOT APPLE)
             target_link_libraries(SQLiteCpp_example1 dl)
         endif ()
-    endif ()    
+    endif ()
 else (SQLITECPP_BUILD_EXAMPLES)
     message(STATUS "SQLITECPP_BUILD_EXAMPLES OFF")
 endif (SQLITECPP_BUILD_EXAMPLES)
@@ -227,7 +234,7 @@ if (SQLITECPP_BUILD_TESTS)
     # add the subdirectory containing the CMakeLists.txt for the gtest library
     # TODO: under Linux, uses libgtest-dev if found
     # TODO: move to the new googletest Github repository
-    add_subdirectory(googletest) 
+    add_subdirectory(googletest)
     include_directories("${PROJECT_SOURCE_DIR}/googletest/include")
 
     # add the unit test executable
@@ -236,7 +243,7 @@ if (SQLITECPP_BUILD_TESTS)
     # Link target with dl for linux
     if (UNIX AND NOT APPLE)
         target_link_libraries(SQLiteCpp_tests dl)
-    endif ()    
+    endif ()
 
     # add a "test" target:
     enable_testing()
