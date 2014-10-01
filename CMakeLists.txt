@@ -9,6 +9,23 @@ if (NOT BIICODE)
 cmake_minimum_required(VERSION 2.6)
 project(SQLiteCpp)
 
+option(SQLITE_ENABLE_COLUMN_METADATA "Enable Column::getName(). Require support from sqlite3 library." OFF)
+if (SQLITE_ENABLE_COLUMN_METADATA)
+    # Enable the use of SQLite column metadata and Column::getName() method,
+    # Require that the sqlite3 library is also compiled with this flag (default under Debian/Ubuntu, but not on Mac OS X).
+    add_definitions(-DSQLITE_ENABLE_COLUMN_METADATA)
+else(SQLITE_ENABLE_COLUMN_METADATA)
+    message(STATUS "SQLITE_ENABLE_COLUMN_METADATA OFF")
+endif (SQLITE_ENABLE_COLUMN_METADATA)
+
+option(SQLITE_ENABLE_ASSERT_HANDLER "Enable the user defintion of a assertion_failed() handler." OFF)
+if (SQLITE_ENABLE_ASSERT_HANDLER)
+    # Enable the user defintion of a assertion_failed() handler (default to false, easier to handler for begginers).
+    add_definitions(-DSQLITECPP_ENABLE_ASSERT_HANDLER)
+else(SQLITE_ENABLE_ASSERT_HANDLER)
+    message(STATUS "SQLITE_ENABLE_ASSERT_HANDLER OFF")
+endif (SQLITE_ENABLE_ASSERT_HANDLER)
+
 # Define useful variables to handle OS differences:
 if (WIN32)
     set(DEV_NULL                "NUL")
