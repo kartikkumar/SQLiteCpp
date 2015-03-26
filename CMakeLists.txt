@@ -1,11 +1,33 @@
+<<<<<<< 775a2b9e5224a119c1f4cc2622bf228d8976b0d2
+=======
+if (BIICODE)
+
+  # biicode doesn't process files bigger than 5Mb
+  list(APPEND BII_LIB_SRC sqlite3/sqlite3.c)
+  # Include base block dir
+  ADD_BIICODE_TARGETS()
+
+  # Link target with dl for linux
+  if (UNIX)
+   TARGET_LINK_LIBRARIES(${BII_BLOCK_TARGET} INTERFACE pthread)
+   if(NOT APPLE)
+     TARGET_LINK_LIBRARIES(${BII_BLOCK_TARGET} INTERFACE dl)
+   endif()
+  endif()
+else (BIICODE)
+
+>>>>>>> Set build options to OFF as default.
 # Main CMake file for compiling the library itself, examples and tests.
 #
 # Copyright (c) 2012-2015 Sebastien Rombauts (sebastien.rombauts@gmail.com)
 #
 # Distributed under the MIT License (MIT) (See accompanying file LICENSE.txt
 # or copy at http://opensource.org/licenses/MIT)
+<<<<<<< 775a2b9e5224a119c1f4cc2622bf228d8976b0d2
 if (NOT BIICODE)
 
+=======
+>>>>>>> Set build options to OFF as default.
 cmake_minimum_required(VERSION 2.6)
 project(SQLiteCpp)
 
@@ -169,17 +191,28 @@ endif (UNIX AND (CMAKE_COMPILER_IS_GNUCXX OR ${CMAKE_CXX_COMPILER_ID} STREQUAL "
 
 ## Build provided copy of SQLite3 C library ##
 
+<<<<<<< 775a2b9e5224a119c1f4cc2622bf228d8976b0d2
 option(SQLITECPP_INTERNAL_SQLITE "Add the internal SQLite3 source to the project." ON)
 if (SQLITECPP_INTERNAL_SQLITE)
     # build the SQLite3 C library (for ease of use/compatibility) versus Linux sqlite3-dev package
     add_subdirectory(sqlite3)
     include_directories("${PROJECT_SOURCE_DIR}/sqlite3")
 endif (SQLITECPP_INTERNAL_SQLITE)
+=======
+option (SQLITECPP_INTERNAL_SQLITE "Add the internal SQLite3 source to the project." OFF)
+if (WIN32)
+    if (SQLITECPP_INTERNAL_SQLITE)
+        # build the SQLite3 C library for Windows (for ease of use) versus Linux sqlite3-dev package
+        add_subdirectory(sqlite3)
+        include_directories("${PROJECT_SOURCE_DIR}/sqlite3")
+    endif (SQLITECPP_INTERNAL_SQLITE)
+endif (WIN32)
+>>>>>>> Set build options to OFF as default.
 
 
 # Optional additional targets:
 
-option(SQLITECPP_RUN_CPPLINT "Run cpplint.py tool for Google C++ StyleGuide." ON)
+option(SQLITECPP_RUN_CPPLINT "Run cpplint.py tool for Google C++ StyleGuide." OFF)
 if (SQLITECPP_RUN_CPPLINT)
     find_package(PythonInterp)
     if (PYTHONINTERP_FOUND)
@@ -194,7 +227,7 @@ else (SQLITECPP_RUN_CPPLINT)
     message(STATUS "SQLITECPP_RUN_CPPLINT OFF")
 endif (SQLITECPP_RUN_CPPLINT)
 
-option(SQLITECPP_RUN_CPPCHECK "Run cppcheck C++ static analysis tool." ON)
+option(SQLITECPP_RUN_CPPCHECK "Run cppcheck C++ static analysis tool." OFF)
 if (SQLITECPP_RUN_CPPCHECK)
     find_program(CPPCHECK_EXECUTABLE NAMES cppcheck)
     if (CPPCHECK_EXECUTABLE)
